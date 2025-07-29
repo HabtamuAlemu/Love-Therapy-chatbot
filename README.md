@@ -70,4 +70,3 @@ npm start
 - **Backend**: Node.js, Express
 - **AI**: Google Gemini API
 
----
