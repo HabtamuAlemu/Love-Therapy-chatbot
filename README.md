@@ -70,3 +70,6 @@ npm start
 - **Backend**: Node.js, Express
 - **AI**: Google Gemini API
 
+<img width="1272" height="835" alt="image" src="https://github.com/user-attachments/assets/f765a3e8-cf50-4507-9dbf-7ae902099444" />
+<img width="1916" height="809" alt="image" src="https://github.com/user-attachments/assets/acad4e54-023e-4d61-8e99-c8d077e329ee" />
+
