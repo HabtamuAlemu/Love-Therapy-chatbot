@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Love Therapy Chatbot</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #f7cac9 0%, #f9f6f7 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(231, 84, 128, 0.08);
+      padding: 36px 28px 28px 28px;
+      max-width: 350px;
+      width: 100%;
+      text-align: center;
+    }
+    h2 {
+      color: #e75480;
+      margin-bottom: 18px;
+      font-size: 1.7rem;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    input[type="text"], input[type="password"] {
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
+      font-size: 1rem;
+    }
+    .btn {
+      background: #e75480;
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 10px 0;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+    .btn:hover {
+      background: #d13a6f;
+    }
+    .footer {
+      margin-top: 24px;
+      color: #aaa;
+      font-size: 0.95rem;
+    }
+    .link {
+      color: #e75480;
+      text-decoration: none;
+      font-size: 1rem;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    .link:hover {
+      text-decoration: underline;
+    }
+    .error {
+      color: #e75480;
+      margin-top: 8px;
+      font-size: 1rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form id="login-form">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button class="btn" type="submit">Login</button>
+    </form>
+    <div class="error" id="error-msg">Invalid username or password.</div>
+    <a class="link" href="register.html">Don't have an account? Register</a>
+    <button id="theme-toggle" class="btn" style="margin-top:18px;">Toggle Dark/Light</button>
+  </div>
+  <div class="footer">&copy; 2025 Love Therapy Chatbot</div>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const user = JSON.parse(localStorage.getItem('ltc_user_' + username) || 'null');
+      if (user && user.password === password) {
+        localStorage.setItem('ltc_logged_in', 'true');
+        localStorage.setItem('ltc_logged_in_user', username);
+        window.location.href = 'chat.html';
+      } else {
+        document.getElementById('error-msg').style.display = 'block';
+      }
+    });
+
+    // Theme toggle logic
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.style.setProperty('--sidebar-bg', '#f7f7fa');
+        document.documentElement.style.setProperty('--sidebar-accent', '#e0e0e0');
+        document.documentElement.style.setProperty('--sidebar-text', '#23242a');
+        document.documentElement.style.setProperty('--main-bg', '#fff');
+        document.documentElement.style.setProperty('--main-text', '#23242a');
+        document.documentElement.style.setProperty('--card-bg', '#f7f7fa');
+        document.documentElement.style.setProperty('--input-bg', '#fff');
+        document.documentElement.style.setProperty('--input-border', '#ccc');
+      } else {
+        document.documentElement.style.setProperty('--sidebar-bg', '#23242a');
+        document.documentElement.style.setProperty('--sidebar-accent', '#3a3b41');
+        document.documentElement.style.setProperty('--sidebar-text', '#e0e0e0');
+        document.documentElement.style.setProperty('--main-bg', '#18191f');
+        document.documentElement.style.setProperty('--main-text', '#f7f7fa');
+        document.documentElement.style.setProperty('--card-bg', '#23242a');
+        document.documentElement.style.setProperty('--input-bg', '#23242a');
+        document.documentElement.style.setProperty('--input-border', '#44444a');
+      }
+      localStorage.setItem('ltc_theme', theme);
+    }
+    document.getElementById('theme-toggle').onclick = function() {
+      const current = localStorage.getItem('ltc_theme') || 'dark';
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    };
+    // On load, apply theme
+    setTheme(localStorage.getItem('ltc_theme') || 'dark');
+  </script>
+</body>
+</html> 

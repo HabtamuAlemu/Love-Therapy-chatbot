@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat - Love Therapy Chatbot</title>
+  <style>
+    :root {
+      --sidebar-bg: #23242a;
+      --sidebar-accent: #3a3b41;
+      --sidebar-text: #e0e0e0;
+      --main-bg: #18191f;
+      --main-text: #f7f7fa;
+      --primary: #e75480;
+      --primary-dark: #d13a6f;
+      --card-bg: #23242a;
+      --input-bg: #23242a;
+      --input-border: #44444a;
+      --shadow: 0 4px 24px rgba(231, 84, 128, 0.10);
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--main-bg);
+      color: var(--main-text);
+      min-height: 100vh;
+    }
+    body {
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 32px 0 0 0;
+      box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+      z-index: 2;
+    }
+    .sidebar .app-title {
+      color: var(--primary);
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-left: 32px;
+      margin-bottom: 36px;
+      letter-spacing: 1px;
+    }
+    .sidebar .new-chat-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 24px;
+      font-size: 1.08rem;
+      font-weight: 500;
+      margin-left: 32px;
+      margin-bottom: 32px;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: 0 2px 8px rgba(231, 84, 128, 0.08);
+    }
+    .sidebar .new-chat-btn:hover {
+      background: var(--primary-dark);
+    }
+    .sidebar .profile {
+      margin-top: auto;
+      margin-left: 32px;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sidebar .profile-icon {
+      background: var(--primary);
+      color: #fff;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .sidebar .profile-name {
+      color: var(--sidebar-text);
+      font-size: 1.08rem;
+      font-weight: 500;
+    }
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: var(--main-bg);
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .container {
+      background: var(--card-bg);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 32px 24px 24px 24px;
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      margin-top: 40px;
+      margin-bottom: 32px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .welcome {
+      color: var(--primary);
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    .logout-btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 500;
+    }
+    .logout-btn:hover {
+      background: var(--primary-dark);
+    }
+    h2 {
+      color: var(--primary);
+      margin-bottom: 18px;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+    }
+    form {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 0;
+      margin-top: 10px;
+    }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      font-size: 1rem;
+      background: var(--input-bg);
+      color: var(--main-text);
+      transition: border 0.2s;
+    }
+    input[type="text"]:focus {
+      border: 1.5px solid var(--primary);
+      outline: none;
+    }
+    button[type="submit"], .btn {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 22px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(231, 84, 128, 0.08);
+    }
+    button[type="submit"]:hover, .btn:hover {
+      background: var(--primary-dark);
+    }
+    .chat-area {
+      margin-top: 22px;
+      min-height: 120px;
+      background: #23242a;
+      border-radius: 10px;
+      padding: 16px 12px;
+      font-size: 1.05rem;
+      color: var(--main-text);
+      white-space: pre-line;
+      text-align: left;
+      max-height: 260px;
+      overflow-y: auto;
+      box-shadow: 0 1px 4px rgba(231, 84, 128, 0.04);
+    }
+    .footer {
+      margin-top: 28px;
+      color: #aaa;
+      font-size: 0.98rem;
+    }
+    .msg-user {
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 2px;
+      padding: 4px 0;
+    }
+    .msg-bot {
+      color: var(--main-text);
+      margin-bottom: 12px;
+      background: #3a3b41;
+      border-radius: 6px;
+      padding: 6px 10px;
+      display: inline-block;
+      max-width: 90%;
+    }
+    .msg-user-block {
+      text-align: right;
+      margin-bottom: 2px;
+    }
+    .msg-bot-block {
+      text-align: left;
+      margin-bottom: 10px;
+    }
+    #history-btn {
+      margin-top: 16px;
+      margin-bottom: 0;
+      width: 100%;
+      font-size: 1.05rem;
+      background: var(--sidebar-accent);
+      color: var(--main-text);
+      border: 1px solid var(--input-border);
+    }
+    #history-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border: 1px solid var(--primary);
+    }
+    #history-modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.35);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: var(--card-bg);
+      padding: 28px 20px 20px 20px;
+      border-radius: 14px;
+      max-width: 420px;
+      width: 90vw;
+      max-height: 70vh;
+      overflow-y: auto;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.12);
+      position: relative;
+      text-align: left;
+      color: var(--main-text);
+    }
+    #close-history {
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: var(--primary);
+      cursor: pointer;
+    }
+    #history-content {
+      font-size: 1.05rem;
+      color: var(--main-text);
+      margin-top: 8px;
+    }
+    @media (max-width: 700px) {
+      .sidebar {
+        width: 60px;
+        padding-left: 0;
+        padding-right: 0;
+      }
+      .sidebar .app-title, .sidebar .profile-name {
+        display: none;
+      }
+      .sidebar .new-chat-btn {
+        margin-left: 8px;
+        padding: 10px 10px;
+        font-size: 0.95rem;
+      }
+      .sidebar .profile {
+        margin-left: 8px;
+      }
+      .main {
+        padding-left: 0;
+      }
+      .container {
+        margin-top: 16px;
+        padding: 18px 4px 12px 4px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="app-title">Love Therapy</div>
+    <button class="new-chat-btn" onclick="window.location.reload()">+ New Chat</button>
+    <div class="profile">
+      <div class="profile-icon" id="profile-icon"></div>
+      <div class="profile-name" id="profile-name"></div>
+      <button id="settings-btn" title="Edit Profile" style="background:none;border:none;color:var(--primary);font-size:1.2rem;cursor:pointer;margin-left:6px;">&#9881;</button>
+    </div>
+  </div>
+  <div class="main">
+    <div class="container">
+      <div class="header">
+        <div class="welcome" id="welcome-msg"></div>
+        <button class="logout-btn" onclick="logout()">Logout</button>
+      </div>
+      <h2>Love Therapy Chatbot</h2>
+      <form id="chat-form">
+        <input type="text" id="question" placeholder="Ask your love question..." required />
+        <button type="submit">Send</button>
+      </form>
+      <button class="btn" id="history-btn">View History</button>
+      <div class="chat-area" id="chat-area"></div>
+      <div id="history-modal">
+        <div class="modal-content">
+          <button id="close-history">&times;</button>
+          <h3 style="color:#e75480;margin-top:0;margin-bottom:12px;letter-spacing:1px;font-size:1.2rem;">Chat History</h3>
+          <div id="history-content"></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">&copy; 2025 Love Therapy Chatbot</div>
+  </div>
+  <div id="settings-modal" style="display:none;position:fixed;top:0;left:0;width:100vw;height:100vh;background:rgba(0,0,0,0.35);z-index:2000;align-items:center;justify-content:center;">
+    <div class="modal-content" style="max-width:340px;">
+      <button id="close-settings" style="position:absolute;top:8px;right:12px;background:none;border:none;font-size:1.3rem;color:var(--primary);cursor:pointer;">&times;</button>
+      <h3 style="color:var(--primary);margin-top:0;margin-bottom:12px;letter-spacing:1px;font-size:1.1rem;">Edit Profile</h3>
+      <form id="edit-user-form" style="display:flex;flex-direction:column;gap:14px;">
+        <input type="text" id="edit-username" placeholder="Username" required />
+        <input type="password" id="edit-password" placeholder="Password" required />
+        <button class="btn" type="submit">Save Changes</button>
+      </form>
+      <div id="edit-user-msg" style="color:var(--primary);margin-top:8px;"></div>
+      <hr style="margin:18px 0 10px 0;border:0;border-top:1px solid #333;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="color:var(--main-text);font-size:1.05rem;">Theme:</span>
+        <button id="theme-toggle" class="btn" style="padding:7px 18px;font-size:1rem;background:var(--sidebar-accent);color:var(--main-text);border:1px solid var(--input-border);">Toggle Dark/Light</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    // Redirect to login if not logged in
+    if (localStorage.getItem('ltc_logged_in') !== 'true') {
+      window.location.href = 'login.html';
+    }
+    // Show welcome message and profile
+    const username = localStorage.getItem('ltc_logged_in_user') || '';
+    document.getElementById('welcome-msg').textContent = 'Welcome, ' + username + '!';
+    document.getElementById('profile-name').textContent = username;
+    document.getElementById('profile-icon').textContent = username ? username[0].toUpperCase() : 'U';
+
+    function logout() {
+      localStorage.removeItem('ltc_logged_in');
+      localStorage.removeItem('ltc_logged_in_user');
+      window.location.href = 'login.html';
+    }
+
+    const chatArea = document.getElementById('chat-area');
+    const form = document.getElementById('chat-form');
+    const questionInput = document.getElementById('question');
+
+    function appendMessage(user, text, isBot) {
+      const block = document.createElement('div');
+      if (isBot) {
+        block.className = 'msg-bot-block';
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'msg-bot';
+        msgDiv.textContent = 'Bot: ' + text;
+        block.appendChild(msgDiv);
+      } else {
+        block.className = 'msg-user-block';
+        const msgDiv = document.createElement('div');
+        msgDiv.className = 'msg-user';
+        msgDiv.textContent = user + ': ' + text;
+        block.appendChild(msgDiv);
+      }
+      chatArea.appendChild(block);
+      chatArea.scrollTop = chatArea.scrollHeight;
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const question = questionInput.value.trim();
+      if (!question) return;
+      appendMessage(username, question, false);
+      questionInput.value = '';
+      appendMessage('Bot', 'Thinking...', true);
+      try {
+        const res = await fetch(`/ask?question=${encodeURIComponent(question)}&user=${encodeURIComponent(username)}`);
+        const text = await res.text();
+        // Remove last "Thinking..." message
+        const lastBlock = chatArea.lastChild;
+        if (lastBlock && lastBlock.textContent && lastBlock.textContent.includes('Bot: Thinking...')) chatArea.removeChild(lastBlock);
+        appendMessage('Bot', text, true);
+      } catch (err) {
+        // Remove last "Thinking..." message
+        const lastBlock = chatArea.lastChild;
+        if (lastBlock && lastBlock.textContent && lastBlock.textContent.includes('Bot: Thinking...')) chatArea.removeChild(lastBlock);
+        appendMessage('Bot', 'Error connecting to chatbot.', true);
+      }
+    });
+
+    document.getElementById('history-btn').onclick = async function() {
+      const modal = document.getElementById('history-modal');
+      const content = document.getElementById('history-content');
+      content.innerHTML = '<span style="color:#aaa;">Loading...</span>';
+      modal.style.display = 'flex';
+      try {
+        const res = await fetch(`/history?user=${encodeURIComponent(username)}`);
+        const history = await res.json();
+        if (!history.length) {
+          content.innerHTML = '<em style="color:#aaa;">No history yet.</em>';
+        } else {
+          content.innerHTML = history.map(item =>
+            `<div style='margin-bottom:18px;'>
+              <div class="msg-user-block"><div class="msg-user">You: ${item.question}</div></div>
+              <div class="msg-bot-block"><div class="msg-bot">Bot: ${item.answer}</div></div>
+            </div>`
+          ).join('');
+        }
+      } catch (e) {
+        content.innerHTML = '<span style="color:#e75480;">Error loading history.</span>';
+      }
+    };
+    document.getElementById('close-history').onclick = function() {
+      document.getElementById('history-modal').style.display = 'none';
+    };
+
+    // Settings modal logic
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsModal = document.getElementById('settings-modal');
+    const closeSettings = document.getElementById('close-settings');
+    const editUserForm = document.getElementById('edit-user-form');
+    const editUsername = document.getElementById('edit-username');
+    const editPassword = document.getElementById('edit-password');
+    const editUserMsg = document.getElementById('edit-user-msg');
+    const themeToggle = document.getElementById('theme-toggle');
+
+    settingsBtn.onclick = function() {
+      // Pre-fill with current user
+      editUsername.value = username;
+      const user = JSON.parse(localStorage.getItem('ltc_user_' + username) || 'null');
+      editPassword.value = user ? user.password : '';
+      editUserMsg.textContent = '';
+      settingsModal.style.display = 'flex';
+    };
+    closeSettings.onclick = function() {
+      settingsModal.style.display = 'none';
+    };
+    editUserForm.onsubmit = function(e) {
+      e.preventDefault();
+      const newUsername = editUsername.value.trim();
+      const newPassword = editPassword.value;
+      if (!newUsername || !newPassword) return;
+      // Remove old user if username changed
+      if (newUsername !== username) {
+        localStorage.removeItem('ltc_user_' + username);
+      }
+      // Save new user
+      localStorage.setItem('ltc_user_' + newUsername, JSON.stringify({ username: newUsername, password: newPassword }));
+      localStorage.setItem('ltc_logged_in_user', newUsername);
+      localStorage.setItem('ltc_logged_in', 'true');
+      document.getElementById('profile-name').textContent = newUsername;
+      document.getElementById('profile-icon').textContent = newUsername[0].toUpperCase();
+      editUserMsg.textContent = 'Profile updated!';
+      setTimeout(() => { settingsModal.style.display = 'none'; window.location.reload(); }, 900);
+    };
+    // Theme toggle logic
+    function setTheme(theme) {
+      if (theme === 'light') {
+        document.documentElement.style.setProperty('--sidebar-bg', '#f7f7fa');
+        document.documentElement.style.setProperty('--sidebar-accent', '#e0e0e0');
+        document.documentElement.style.setProperty('--sidebar-text', '#23242a');
+        document.documentElement.style.setProperty('--main-bg', '#fff');
+        document.documentElement.style.setProperty('--main-text', '#23242a');
+        document.documentElement.style.setProperty('--card-bg', '#f7f7fa');
+        document.documentElement.style.setProperty('--input-bg', '#fff');
+        document.documentElement.style.setProperty('--input-border', '#ccc');
+      } else {
+        document.documentElement.style.setProperty('--sidebar-bg', '#23242a');
+        document.documentElement.style.setProperty('--sidebar-accent', '#3a3b41');
+        document.documentElement.style.setProperty('--sidebar-text', '#e0e0e0');
+        document.documentElement.style.setProperty('--main-bg', '#18191f');
+        document.documentElement.style.setProperty('--main-text', '#f7f7fa');
+        document.documentElement.style.setProperty('--card-bg', '#23242a');
+        document.documentElement.style.setProperty('--input-bg', '#23242a');
+        document.documentElement.style.setProperty('--input-border', '#44444a');
+      }
+      localStorage.setItem('ltc_theme', theme);
+    }
+    themeToggle.onclick = function() {
+      const current = localStorage.getItem('ltc_theme') || 'dark';
+      setTheme(current === 'dark' ? 'light' : 'dark');
+    };
+    // On load, apply theme
+    setTheme(localStorage.getItem('ltc_theme') || 'dark');
+  </script>
+</body>
+</html> 
