@@ -71,6 +71,3 @@ npm start
 - **AI**: Google Gemini API
 
 ---
-
-## 📄 License
-MIT 
