@@ -21,8 +21,8 @@ A beautiful, modern web app for love and relationship advice powered by AI (Goog
 
 ### 1. **Clone the repository**
 ```
-git clone <your-repo-url>
-cd <your-project-folder>
+git clone git@github.com:HabtamuAlemu/Love-Therapy-chatbot.git
+cd "your-project-folder"
 ```
 
 ### 2. **Install dependencies**
